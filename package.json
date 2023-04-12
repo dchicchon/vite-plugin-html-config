@@ -1,6 +1,6 @@
 {
   "name": "@dchicchon/vite-plugin-html-config",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "a vite html config for script,meta,link and more..",
   "author": "ahwgs <ah_wgs@126.com>, dchicchon <danielchicchon@gmail.com>",
   "license": "MIT",
@@ -29,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ahwgs/vite-plugin-html-config.git"
+    "url": "git+https://github.com/dchicchon/vite-plugin-html-config.git"
   },
   "bugs": {
     "url": "https://github.com/ahwgs/vite-plugin-html-config/issues"

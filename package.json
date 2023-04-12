@@ -1,6 +1,6 @@
 {
   "name": "@dchicchon/vite-plugin-html-config",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "a vite html config for script,meta,link and more..",
   "author": "ahwgs <ah_wgs@126.com>, dchicchon <danielchicchon@gmail.com>",
   "license": "MIT",
@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "avenger build --watch",
     "build": "avenger build",
-    "release": "npx bumpp --push --tag --commit && npm publish --public"
+    "release": "npx bumpp --push --tag --commit && npm publish --access public"
   },
   "devDependencies": {
     "@osdoc-dev/avenger-cli": "0.2.4",

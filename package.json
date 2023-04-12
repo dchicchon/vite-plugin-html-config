@@ -1,6 +1,6 @@
 {
   "name": "@dchicchon/vite-plugin-html-config",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "a vite html config for script,meta,link and more..",
   "author": "ahwgs <ah_wgs@126.com>, dchicchon <danielchicchon@gmail.com>",
   "license": "MIT",

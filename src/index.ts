@@ -1,10 +1,18 @@
-import type { Plugin, HtmlTagDescriptor } from "vite";
+import type { Plugin, HtmlTagDescriptor } from 'vite';
 export interface IHTMLTag {
   [key: string]: string | boolean;
 }
 
+export interface ID {
+  path: string;
+}
+
 export type ScriptTag = Record<string, string | boolean> | string;
 export interface Options {
+  files: Files;
+}
+
+export interface FileOption {
   favicon?: string;
   title?: string;
   metas?: IHTMLTag[];
@@ -14,40 +22,44 @@ export interface Options {
   scripts?: ScriptTag[];
   preHeadScripts?: ScriptTag[];
 }
+export interface Files {
+  [key: string]: FileOption;
+}
 export default function HtmlPlugin(rawOptions: Options): Plugin {
   const {
-    favicon,
-    title,
-    headScripts = [],
-    metas = [],
-    links = [],
-    style,
-    scripts = [],
-    preHeadScripts = [],
+    files,
+    // favicon,
+    // title,
+    // headScripts = [],
+    // metas = [],
+    // links = [],
+    // style,
+    // scripts = [],
+    // preHeadScripts = [],
   } = rawOptions;
 
   const getScriptContent = (
     script: ScriptTag,
-    injectTo: "head" | "body" | "head-prepend" | "body-prepend"
+    injectTo: 'head' | 'body' | 'head-prepend' | 'body-prepend'
   ) => {
     let result = {} as HtmlTagDescriptor;
-    if (typeof script === "object" && script.src) {
+    if (typeof script === 'object' && script.src) {
       result = {
-        tag: "script",
+        tag: 'script',
         injectTo,
         attrs: { ...script },
       };
-    } else if (typeof script === "object" && script.content) {
+    } else if (typeof script === 'object' && script.content) {
       const { content, ...attr } = script;
       result = {
-        tag: "script",
+        tag: 'script',
         injectTo,
         attrs: { ...attr },
         children: `${content}`,
       };
     } else {
       result = {
-        tag: "script",
+        tag: 'script',
         injectTo,
         children: `${script}`,
       };
@@ -56,24 +68,35 @@ export default function HtmlPlugin(rawOptions: Options): Plugin {
   };
 
   return {
-    name: "html-plugin",
+    name: 'html-plugin',
     transformIndexHtml: {
       enforce: 'pre',
-      transform: (html: string) => {
-        let resultHtmlStr = html
+      transform: (html: string, id: ID) => {
+        const fileKey = id.path.slice(1);
+        const {
+          favicon,
+          metas = [],
+          links = [],
+          style,
+          title,
+          headScripts = [],
+          scripts = [],
+          preHeadScripts = [],
+        } = files[fileKey];
+        let resultHtmlStr = html;
         const htmlResult = [] as HtmlTagDescriptor[];
         if (favicon) {
           htmlResult.push({
-            tag: "link",
-            attrs: { rel: "shortcut icon", type: "image/x-icon", href: favicon },
-            injectTo: "head",
+            tag: 'link',
+            attrs: { rel: 'shortcut icon', type: 'image/x-icon', href: favicon },
+            injectTo: 'head',
           });
         }
         if (metas.length) {
           metas.forEach((meta) => {
             htmlResult.push({
-              tag: "meta",
-              injectTo: "head",
+              tag: 'meta',
+              injectTo: 'head',
               attrs: { ...meta },
             });
           });
@@ -81,20 +104,20 @@ export default function HtmlPlugin(rawOptions: Options): Plugin {
         if (links.length) {
           links.forEach((meta) => {
             htmlResult.push({
-              tag: "link",
-              injectTo: "head",
+              tag: 'link',
+              injectTo: 'head',
               attrs: { ...meta },
             });
           });
         }
         if (style && style.length) {
           htmlResult.push({
-            tag: "style",
-            injectTo: "head",
+            tag: 'style',
+            injectTo: 'head',
             children: `${style}`
-              .split("\n")
+              .split('\n')
               .map((line) => `  ${line}`)
-              .join("\n"),
+              .join('\n'),
           });
         }
         if (title && title.length) {
@@ -102,28 +125,28 @@ export default function HtmlPlugin(rawOptions: Options): Plugin {
           resultHtmlStr = html.replace(
             /<title>(.*?)<\/title>/,
             `<title>${title}</title>`
-          )
+          );
         }
         if (headScripts.length) {
           headScripts.forEach((script) => {
-            htmlResult.push(getScriptContent(script, "head"));
+            htmlResult.push(getScriptContent(script, 'head'));
           });
         }
         if (scripts.length) {
           scripts.forEach((script) => {
-            htmlResult.push(getScriptContent(script, "body"));
+            htmlResult.push(getScriptContent(script, 'body'));
           });
         }
         if (preHeadScripts.length) {
           preHeadScripts.forEach((script) => {
-            htmlResult.push(getScriptContent(script, "head-prepend"));
+            htmlResult.push(getScriptContent(script, 'head-prepend'));
           });
         }
         return {
           html: resultHtmlStr,
-          tags: htmlResult
-        }
-      }
-    }
-  } as Plugin
+          tags: htmlResult,
+        };
+      },
+    },
+  } as Plugin;
 }
